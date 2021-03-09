@@ -1,4 +1,5 @@
 var W3CWebSocket = require("websocket").w3cwebsocket;
+import bus from "./bus";
 import store from "@/store";
 
 var url = "ws://192.168.0.197:8881/";
@@ -23,6 +24,12 @@ client.onclose = function() {
 
 client.onmessage = function(e) {
   if (typeof e.data === "string") {
-    console.log("Received: '" + e.data + "'");
+    let data = {};
+    try {
+      data = JSON.parse(e.data);
+    } catch (error) {
+      console.log(error);
+    }
+    bus.$emit("onmessage", data);
   }
 };
